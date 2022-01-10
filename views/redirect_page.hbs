@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{!-- <meta http-equiv="refresh" content="1; url = {{main_url}}" /> --}}
+    <title>Document</title>
+</head>
+<body>
+    {{!-- <script async src="http://localhost:3000/tracker.js" data-ackee-server="http://localhost:3000" data-ackee-domain-id="e342bd57-9d14-449e-af8e-63336155ea3b"></script> --}}
+    <script>
+        function checkOS(){
+            var Name = "Unknown OS", url = "{{main_url}}";
+            
+            if (navigator.userAgent.indexOf("Android") != -1) {
+                {{!-- Name = "Android OS"; --}}
+                url = "intent://{{main_url}}/#Intent;scheme=https;package={{package_name}};end";
+            }else if (navigator.userAgent.indexOf("like Mac") != -1) {
+                {{!-- Name = "iOS"; --}}
+                url = "Instagram"; 
+            } else{
+                url = "{{main_url}}";
+            }
+            console.log(url);
+            {{!-- location.replace(url); --}}
+        }
+        if( {{isAppOpener}} ){
+            checkOS();
+            setTimeout(()=>{
+                location.replace("{{main_url}}");
+            }, 200000);
+        }else{
+            console.log("{{main_url}}");
+            var f = "{{main_url}}";
+            var h = document.createElement("div");
+            h.innerHTML = f;
+            console.log(h.innerHTML);
+            location.replace(h.innerHTML);
+        }
+    </script>
+</body>
+</html>

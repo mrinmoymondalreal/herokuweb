@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button type="button" class="b">Hello World</button>
+    <script async src="http://localhost:3000/tracker.js" data-ackee-server="http://localhost:3000" data-ackee-domain-id="e342bd57-9d14-449e-af8e-63336155ea3b"></script>
+    <script>
+
+        document.querySelector('.b').onclick = async (e)=>{
+            await fetch('https://youtube.com', {
+            method: "GET",
+            headers: {
+                'Access-Control-Allow-Origin': 'null',
+            }
+            }).then(e=>e.text()).then(body=>{
+                {{!-- let match = body.match(/<title>([^<]*)<\/title>/); --}}
+                console.log(body);
+            });
+        }
+
+        {{!-- fetch('https://www.youtube.com', {
+            method: "GET",
+            headers: {
+                'Access-Control-Allow-Origin': 'http://localhost:8000',
+            }
+        }).then(e=>e.text()).then(body=>{
+            let match = body.match(/<title>([^<]*)<\/title>/);
+            console.log(body);
+        }); --}}
+    </script>
+</body>
+</html>

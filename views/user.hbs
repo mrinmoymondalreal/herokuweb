@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrfToken }}">
+    <title>LOGIN PAGE</title>
+    <style>
+        .show *, .qrcon *{
+            display: block;
+        }
+        table, th, td {
+            border:1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <form action="/a/addUrl" method="post">
+        <label for="main_url">Enter Url</label>
+        <input type="text" name="main_url" id="main_url"><br>
+        <button type="submit">GET LINK</button>
+    </form>
+    Generator QR <br>
+    <form action="/a/getqr" method="get">
+        <label for="url">Enter Url</label>
+        <input type="text" name="url" id="url"><br>
+        <button type="submit" class="mm">GET QR</button>
+    </form>
+
+    <div class="qrcon"></div>
+    <br><br>
+    <div class="show" style="width:50%">
+      
+    </div>
+
+    <script>
+
+        $('form[method="get"]').addEventListener('submit', (e)=>{
+            e.preventDefault();
+        });
+
+        $('.mm').addEventListener('click', async (e)=>{
+
+            var token =  document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            var j = {
+                url: $('#url').value,
+            }
+
+            var res = await fetch('/a/getqr', {
+                method: 'POST', 
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'CSRF-Token': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(j)
+            });
+            
+            res.text().then(e=>{
+                {{!-- console.log(e); --}}
+                var a = document.createElement('img');
+                a.src = e;
+                a.alt = "QR";
+                $('.qrcon').appendChild(a);
+            });
+        });
+
+        $('form').addEventListener('submit', (e)=>{
+            e.preventDefault();
+        });
+
+        $('button').addEventListener('click', async (e)=>{
+
+            var token =  document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            var user = JSON.parse(atob(getCookie('token').split('.')[1]));
+            var json = {
+                url: $('#main_url').value,
+                id: user.id,
+                usr: user.username,
+            }
+
+            var response = await fetch('/a/addUrl', {
+                method: 'POST', 
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'CSRF-Token': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(json)
+            });
+            
+            response.json().then(e=>{
+                console.log(e);
+                var a = document.createElement('a');
+                a.href = "/s/"+e.data.str;
+                a.target = "_blank";
+                a.innerHTML = "http://192.168.56.1:8000/s/"+e.data.str;
+                $('.show').appendChild(a);
+                
+            });
+        });
+
+
+        function $(a){
+            return document.querySelector(a);
+        }
+
+        function user(a, b){
+            return $(a).value;
+        }
+
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            let expires = "expires="+d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            let user = getCookie("token");
+            if (user != "") {
+                return user;
+            } else {
+                location.replace("http://localhost:8000");
+                return ;
+            }
+        }
+
+        checkCookie();
+
+    </script>
+</body>
+</html>

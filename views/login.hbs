@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrfToken }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/styles/style.css", rel="stylesheet">
+    <title>LOGIN PAGE</title>
+</head>
+<body>
+    <script async src="http://localhost:3000/tracker.js" data-ackee-server="http://localhost:3000" data-ackee-domain-id="e342bd57-9d14-449e-af8e-63336155ea3b"></script>
+
+    <form action="/a/login" method="post">
+        <label for="usrname">USERNAME</label>
+        <input type="text" name="usrname" id="usrname"><br>
+
+        <label for="pwd">PASSWORD</label>
+        <input type="text" name="pwd" id="pwd"><br>  
+        
+        <button type="submit">LOGIN</button>
+    </form>
+    <div class="show">SHOW UP BOX</div>
+
+    <script>
+        function $(a){
+            return document.querySelector(a);
+        }
+
+        function user(a, b){
+            return $(a).value;
+        }
+
+        $('form').addEventListener('submit', (e)=>{
+            e.preventDefault();
+        });
+
+        $('button').addEventListener('click', async (e)=>{
+
+            var token =  document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            var json = {
+                usr: $('#usrname').value,
+                pwd: $('#pwd').value
+
+            }
+
+            var response = await fetch('/a/loginreq', {
+                method: 'POST', 
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'CSRF-Token': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(json)
+            });
+            
+            response.json().then(e=>{
+                console.log(e);
+                if(e.status == 'success'){
+                    setCookie('token', e.data, 10);
+                    $('.show').innerHTML = e.status + " Redirecting to Site ";
+                    setInterval(()=>{
+                        location.replace("https://a686-2401-4900-1f36-394e-4d47-acbc-caa2-2a0d.ngrok.io/user.html");
+                    }, 500)
+                }
+            });
+        });
+
+        function setCookie(cname, cvalue, exdays) {
+            const d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            let expires = "expires="+d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function checkCookie() {
+            let user = getCookie("token");
+            if (user != "") {
+                return user;
+            } else {
+                window.location.href = "localhost:8000/page";
+                return ;
+            }
+        }
+
+    </script>
+</body>
+</html>

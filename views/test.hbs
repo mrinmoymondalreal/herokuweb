@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="/dist/output.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 1</title>
+</head>
+<{{#if b}}body{{else}}div{{/if}}>
+<script async src="http://localhost:3000/tracker.js" data-ackee-server="http://localhost:3000" data-ackee-domain-id="e342bd57-9d14-449e-af8e-63336155ea3b"></script>
+    Hello Test 1
+
+    <ak href="test2">Go 2</ak>
+    <h1 class="text-3xl font-bold underline">
+    Hello world!
+  </h1>
+    <div class="kk"></div>
+
+    <script>
+
+        function $(a){
+            return document.querySelector(a);
+        }
+
+        document.querySelectorAll('ak').forEach(async (e)=>{
+            e.onclick = async ()=>{ 
+                console.log("works");
+                var link = e.getAttribute('href');
+                routuer(link);
+            }
+        });
+
+
+        async function routuer(link){
+            var response = await fetch(`/a/${link}`, {
+                    method: 'GET',
+                }).then(res => res.text()).then(async e=>{
+                    var doc = document.createElement('div');
+                    doc.innerHTML = e;
+                    const script = document.createElement('script');
+                    var f = doc.querySelector('script');
+                    script.innerHTML = f.innerHTML;
+                    $('title').innerHTML = doc.querySelector('title').innerHTML;
+                    const nextURL = `/${link}`;
+                    const nextTitle = doc.querySelector('title').innerHTML;
+                    const nextState = {};
+                    window.history.pushState(nextState, nextTitle, nextURL);
+                    window.history.replaceState(nextState, nextTitle, nextURL)
+                    $('body').innerHTML = "";
+                    $('body').appendChild(doc.querySelector('div'));
+                    $('body').querySelector('div').removeChild(f);
+                    $('body').appendChild(script);
+
+            });
+        }
+
+    </script>
+    
+</{{#if b}}body{{else}}div{{/if}}>
+</html>

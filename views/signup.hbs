@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrfToken }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/static/styles/style.css", rel="stylesheet">
+    <title>SIGNUP PAGE</title>
+</head>
+<body>
+<script async src="http://localhost:3000/tracker.js" data-ackee-server="http://192.168.1.7:3000" data-ackee-domain-id="e342bd57-9d14-449e-af8e-63336155ea3b"></script>
+    <form action="/signup" method="post">
+        
+        <label for="usrname">USERNAME</label>
+        <input type="text" name="usrname" id="usrname"><br>
+
+        <label for="pwd">PASSWORD</label>
+        <input type="text" name="pwd" id="pwd"><br>
+
+        <label for="email">EMIAL</label>
+        <input type="text" name="email" id="email"><br>  
+
+        <label for="name">NAME</label>
+        <input type="text" name="name" id="name"><br> 
+        
+        <label for="number">Mobile Number</label>
+        <input type="text" name="number" id="number"><br>  
+        
+        <button type="submit">SIGN UP</button>
+    </form>
+
+    <script>
+        function $(a){
+            return document.querySelector(a);
+        }
+
+        function user(a, b){
+            return $(a).value;
+        }
+
+        $('form').addEventListener('submit', (e)=>{
+            e.preventDefault();
+        });
+
+        $('button').addEventListener('click', async (e)=>{
+            var token =  document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            var json = {
+                usr: $('#usrname').value,
+                pwd: $('#pwd').value,
+                email: $('#email').value,
+                name: $('#name').value,
+                number: $('#number').value
+            }
+            var response = await fetch('/a/signupreq', {
+                method: 'POST', 
+                mode: 'cors',
+                cache: 'no-cache',
+                credentials: 'same-origin',
+                headers: {
+                    'CSRF-Token': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(json)
+            });
+            
+            response.json().then(e=>{
+                console.log(e);
+            });
+        });
+
+    </script>
+    
+</body>
+</html>
