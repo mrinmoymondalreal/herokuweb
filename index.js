@@ -13,7 +13,7 @@ const QRCode = require('qrcode')
 const JWT_SECRET = 'sdjkfh8923yhjdksbfma@#*(&@*!^#&@bhjb2qiuhesdbhjdsfg839ujkdhfjk';
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 const hbs = create({
   extname: 'hbs',
